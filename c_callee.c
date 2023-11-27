@@ -4,7 +4,10 @@
 void dummy(int* a) { *a += 10; }
 
 // Function called from fortran
-void c_func( char *library, char *name, void (**ptr)(int*)) {
+void *c_func(char *library, char *name) {
   printf("library: %s, name: %s\n", library, name);
-  *ptr = &dummy;
+
+  void (*ptr)(int*) = &dummy;
+
+  return ptr;
 }
