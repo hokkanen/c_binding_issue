@@ -2,20 +2,38 @@ MODULE F_CALLEE
     USE, INTRINSIC :: ISO_C_BINDING
     IMPLICIT NONE
     CONTAINS
-        function func2(library, fname) RESULT(ptr)
-            implicit none
-            CHARACTER :: library(*), fname(*)
-            INTEGER(KIND=SELECTED_INT_KIND(18)) :: ptr
-            TYPE(C_FUNPTR) :: cptr
-            interface
-              subroutine cfunc(lib, f_n, cptr_) &
-                bind(C, name="c_func")
+        FUNCTION GET_FPTR(LIBRARY, FNAME) RESULT(PTR)
+            IMPLICIT NONE
+            CHARACTER :: LIBRARY(*), FNAME(*)
+            INTEGER(KIND=SELECTED_INT_KIND(18)) :: PTR
+            TYPE(C_FUNPTR) :: CPTR
+            INTERFACE
+              SUBROUTINE CFUNC(LIB, F_N, CPTR_) &
+                BIND(C, NAME="c_func")
                 USE, INTRINSIC :: ISO_C_BINDING
-                character(c_char) :: lib(*), f_n(*)
-                TYPE(C_FUNPTR) :: cptr_
-              end subroutine cfunc
-            end interface
-            call cfunc(library, fname, cptr)
-            ptr = TRANSFER(cptr, ptr)
-        end function func2
+                CHARACTER(C_CHAR) :: LIB(*), F_N(*)
+                TYPE(C_FUNPTR) :: CPTR_
+              END SUBROUTINE CFUNC
+            END INTERFACE
+            CALL CFUNC(LIBRARY, FNAME, CPTR)
+            PTR = TRANSFER(CPTR, PTR)
+        END FUNCTION GET_FPTR
+
+        SUBROUTINE TEST_FPTR(PTR)
+          IMPLICIT NONE
+          INTEGER(KIND=SELECTED_INT_KIND(18)) :: PTR       
+          INTERFACE
+            SUBROUTINE DUMMYSUBR() BIND(C)
+              IMPORT
+              IMPLICIT NONE
+            END SUBROUTINE DUMMYSUBR
+          END INTERFACE
+          TYPE(C_FUNPTR) :: CFPTR
+          PROCEDURE(DUMMYSUBR), POINTER :: FN
+
+          CFPTR = TRANSFER(PTR, CFPTR)
+          CALL C_F_PROCPOINTER(CFPTR, FN)
+          CALL FN();
+        END SUBROUTINE TEST_FPTR
+
 END MODULE F_CALLEE

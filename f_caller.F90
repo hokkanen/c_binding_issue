@@ -1,28 +1,30 @@
-program main
+PROGRAM MAIN
     
     USE F_CALLEE
     
-    implicit none
-    INTEGER(KIND=SELECTED_INT_KIND(18)) :: ptr = 0
-    character :: libname(10),funcname(10)
+    IMPLICIT NONE
+    INTEGER(KIND=SELECTED_INT_KIND(18)) :: PTR = 0
+    CHARACTER :: LIBNAME(10),FUNCNAME(10)
+    TYPE(C_FUNPTR) :: CFPTR
     
-    libname(1) = "l"
-    libname(2) = "i"
-    libname(3) = "b"
-    libname(4) = "r"
-    libname(5) = "a"
-    libname(6) = "r"
-    libname(7) = "y"
-    libname(8) = CHAR(0)
+    LIBNAME(1) = "L"
+    LIBNAME(2) = "I"
+    LIBNAME(3) = "B"
+    LIBNAME(4) = "R"
+    LIBNAME(5) = "A"
+    LIBNAME(6) = "R"
+    LIBNAME(7) = "Y"
+    LIBNAME(8) = CHAR(0)
     
-    funcname(1) = "f"
-    funcname(2) = "u"
-    funcname(3) = "n"
-    funcname(4) = "c"
-    funcname(5) = CHAR(0)
+    FUNCNAME(1) = "F"
+    FUNCNAME(2) = "U"
+    FUNCNAME(3) = "N"
+    FUNCNAME(4) = "C"
+    FUNCNAME(5) = CHAR(0)
     
-    print *, 'ptr:', ptr
-    ptr = func2(libname,funcname)
-    print *, 'ptr:', ptr
+    PRINT *, 'PTR:', PTR
+    PTR = GET_FPTR(LIBNAME,FUNCNAME)
+    PRINT *, 'PTR:', PTR
+    CALL TEST_FPTR(PTR);
 
-end program main
+END PROGRAM MAIN
