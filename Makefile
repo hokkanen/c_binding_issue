@@ -1,8 +1,8 @@
 # Makefile for fortran iso_c_binding example
 
 # Compiler settings
-C_COMP = gcc
-F_COMP = gfortran
+C_COMP = cc
+F_COMP = ftn
 
 # Object files
 C_OBJS = c_callee.o
